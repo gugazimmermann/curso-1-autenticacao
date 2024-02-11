@@ -32,3 +32,8 @@ export interface FooterProps {
   image?: boolean;
   user?: IUserData;
 }
+
+export interface AlertProps {
+  type: "success" | "info" | "warning" | "error";
+  text: string;
+}
