@@ -8,3 +8,7 @@ export interface NavLinkProps {
   route: (typeof ROUTES)[keyof typeof ROUTES];
   content: string | React.ReactElement;
 }
+
+export interface TitleProps {
+  title: string;
+}
