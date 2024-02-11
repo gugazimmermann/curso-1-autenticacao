@@ -7,12 +7,25 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
+    "test:coverage": "react-scripts test --watchAll=false --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --fix --ext .ts,.tsx",
     "prettier": "prettier --write \"src/**/*.{ts,tsx}\""
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/react-app-env.d.ts",
+      "!src/reportWebVitals.ts",
+      "!src/**/index.{ts,tsx}",
+      "!src/common/api/**/*.{ts,tsx}",
+      "!src/common/constants/*.{ts,tsx}",
+      "!src/common/interfaces/*.{ts,tsx}",
+      "!src/routes/Routes.tsx"
+    ]
+  },  
   "eslintConfig": {
     "extends": [
       "react-app",
