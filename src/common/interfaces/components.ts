@@ -1,3 +1,4 @@
+import {type IUserData} from "./user";
 import {type ROUTES} from "../constants";
 
 export interface LogoProps {
@@ -21,4 +22,13 @@ export interface IconProps {
 export interface ButtonProps {
   text: string;
   onClick?: () => void;
+}
+
+export interface HeaderProps {
+  user?: IUserData;
+}
+
+export interface FooterProps {
+  image?: boolean;
+  user?: IUserData;
 }

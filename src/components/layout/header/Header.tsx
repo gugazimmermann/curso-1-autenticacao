@@ -1,10 +1,15 @@
 import {useMemo} from "react";
+import {useNavigate} from "react-router-dom";
+import {type HeaderProps} from "../../../common/interfaces/components";
 import {PTBR, ROUTES} from "../../../common/constants";
-import {LoginIcon} from "../../../icons";
+import {logout} from "../../../services/auth";
+import {LoginIcon, LogoutIcon} from "../../../icons";
 import Logo from "../logo/Logo";
 import NavLink from "./NavLink";
 
-const Header = (): JSX.Element => {
+const Header = ({user}: HeaderProps): JSX.Element => {
+  const navigate = useNavigate();
+
   const navItems = useMemo(
     () => [
       {
@@ -15,13 +20,32 @@ const Header = (): JSX.Element => {
         route: ROUTES.BLOG,
         content: PTBR.LAYOUT.MENU.BLOG,
       },
-      {
-        route: ROUTES.LOGIN,
-        content: <LoginIcon />,
-      },
     ],
     [],
   );
+
+  const handleLogout = (): void => {
+    logout();
+    navigate(ROUTES.HOME);
+  };
+
+  const renderAuth = (): JSX.Element | undefined => {
+    if (!user) {
+      return <NavLink key={ROUTES.LOGIN} route={ROUTES.LOGIN} content={<LoginIcon />} />;
+    }
+    return (
+      <>
+        <NavLink key={ROUTES.DASHBOARD} route={ROUTES.DASHBOARD} content={PTBR.PAGES.DASHBOARD.TITLE} />
+        <button
+          type="button"
+          onClick={() => {
+            handleLogout();
+          }}>
+          <LogoutIcon />
+        </button>
+      </>
+    );
+  };
 
   return (
     <div>
@@ -31,6 +55,7 @@ const Header = (): JSX.Element => {
           {navItems.map(item => (
             <NavLink key={item.route} route={item.route} content={item.content} />
           ))}
+          {renderAuth()}
         </nav>
       </header>
       <hr className="border-background-300" />
