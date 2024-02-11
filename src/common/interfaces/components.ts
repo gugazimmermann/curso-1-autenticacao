@@ -62,3 +62,9 @@ export interface AuthLinkProps {
   route: (typeof ROUTES)[keyof typeof ROUTES];
   text: string;
 }
+
+export interface CardProps {
+  title: string;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "danger";
+  children: React.ReactElement;
+}
