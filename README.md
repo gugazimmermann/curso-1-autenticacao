@@ -1,46 +1,63 @@
-# Getting Started with Create React App
+# Curso 1 - Autenticação com React/TypeScript e Jest
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este repositório contém o código para o projeto "**Authentication**", do ebook "**Authentication with React/TypeScript and Jest**", que eu escrevi.
 
-## Available Scripts
+Página de Lançamento do Curso: [https://www.zero-ao-profissional.com.br/](https://www.zero-ao-profissional.com.br/)
 
-In the project directory, you can run:
+Veja a aplicação em funcionamento:
 
-### `yarn start`
+* [https://curso-1-autenticacao.zero-ao-profissional.com.br](https://curso-1-autenticacao.zero-ao-profissional.com.br/)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+* [https://curso-1-autenticacao.vercel.app](https://curso-1-autenticacao.vercel.app/)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Funcionalidades
 
-### `yarn test`
+- **API**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  - Aprenda como obter informações de uma API.
 
-### `yarn build`
+- **Registro de Usuário:**
+  - Fluxo completo de registro de usuário, incluindo códigos de confirmação e recuperação de senha.
+  - Páginas protegidas para usuários autenticados.
+  - Usuários podem atualizar seus dados.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Melhores Práticas de Desenvolvimento
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Metodologia Ágil:**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  - Como trabalhar em um ambiente de desenvolvimento Ágil, com Scrum, Jira, etc.
 
-### `yarn eject`
+- **Componentização:**
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  - Criação de componentes reutilizáveis como alertas, inputs, formulários...
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Hooks e Gerenciamento de Estado:**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  - Ensina o uso de hooks do React e gerenciamento de estado efetivo usando o Contexto do React.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- **Backend Simulado:**
 
-## Learn More
+  - Demonstra a criação de um backend falso para simular chamadas de API.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Qualidade de Código e Testes
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **Estilo de Código:**
+
+  - Utiliza Lint e Prettier para um código consistente e limpo.
+  - Husky para impor qualidade de código em commits e pushs.
+  - Commits Convencionais para um histórico de código sólido.
+
+- **Testes:**
+  - Diferentes tipos de testes, uso de arquivos auxiliares para otimização.
+  - Alcança 100% de cobertura de código com Jest.
+
+## Começando
+
+1. Clone o repositório.
+2. Instale as dependências usando `yarn install`.
+3. Rode com `yarn start`.
+
+**Para ver os códigos, é necessário olhar no console do desenvolvedor (Crtl+Shift+J).**
+
+<!-- ![Unit Tests](readme/unit-test-1.png) -->
+
