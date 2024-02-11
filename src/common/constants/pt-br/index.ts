@@ -21,6 +21,7 @@ const LOGINBUTTON = {
 
 const BLOG = {
   TITLE: "Todos os Posts",
+  BUTTON: "Voltar",
 };
 
 const LOGIN = {

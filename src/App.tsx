@@ -1,15 +1,21 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import Home from "./Home";
-import Blog from "./Blog";
-import Login from "./Login";
+import {ROUTES} from "./common/constants";
+import Layout from "./pages/layout/Layout";
+import Home from "./pages/public/home/Home";
+import Blog from "./pages/public/blog/Blog";
+import Post from "./pages/public/blog/Post";
+import Login from "./pages/public/auth/Login";
 
 function App(): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/entrar" element={<Login />} />
+        <Route element={<Layout />}>
+          <Route path={ROUTES.HOME} element={<Home />} />
+          <Route path={ROUTES.BLOG} element={<Blog />} />
+          <Route path={`${ROUTES.BLOG}/:postId?`} element={<Post />} />
+          <Route path={ROUTES.LOGIN} element={<Login />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -12,3 +12,13 @@ export interface NavLinkProps {
 export interface TitleProps {
   title: string;
 }
+
+export interface IconProps {
+  size?: string;
+  color?: string;
+}
+
+export interface ButtonProps {
+  text: string;
+  onClick?: () => void;
+}
