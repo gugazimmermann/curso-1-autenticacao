@@ -1,19 +1,22 @@
-import {render, screen, fireEvent} from "@testing-library/react";
-import {MemoryRouter, Route, Routes} from "react-router-dom";
+import {screen, fireEvent} from "@testing-library/react";
+import {Route, Routes} from "react-router-dom";
 import {PTBR, ROUTES} from "../../common/constants";
+import {componentSetup, useAuthMock} from "../../tests-setup";
 import Login from "../../pages/public/auth/Login";
 import AuthLink from "./AuthLink";
 
 describe("AuthLink", () => {
   test("AuthLink should have text and route", () => {
-    render(
-      <MemoryRouter initialEntries={[ROUTES.HOME]}>
+    useAuthMock.mockReturnValue({state: {user: null}});
+    componentSetup({
+      component: (
         <Routes>
           <Route path={ROUTES.HOME} element={<AuthLink route={ROUTES.LOGIN} text="Login Link" />} />
           <Route path={ROUTES.LOGIN} element={<Login />} />
         </Routes>
-      </MemoryRouter>,
-    );
+      ),
+      initialEntries: [ROUTES.HOME],
+    });
     const link = screen.getByRole("link", {name: "Login Link"});
     expect(link).toHaveAttribute("href", ROUTES.LOGIN);
     fireEvent.click(link);

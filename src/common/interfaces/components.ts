@@ -1,4 +1,3 @@
-import {type IUserData} from "./user";
 import {type ROUTES} from "../constants";
 
 export interface LogoProps {
@@ -29,13 +28,8 @@ export interface ButtonProps {
   onClick?: () => void;
 }
 
-export interface HeaderProps {
-  user?: IUserData;
-}
-
 export interface FooterProps {
   image?: boolean;
-  user?: IUserData;
 }
 
 export interface AlertProps {
@@ -67,4 +61,10 @@ export interface FormProps {
 export interface AuthLinkProps {
   route: (typeof ROUTES)[keyof typeof ROUTES];
   text: string;
+}
+
+export interface CardProps {
+  title: string;
+  color?: "primary" | "secondary" | "success" | "info" | "warning" | "danger";
+  children: React.ReactElement;
 }

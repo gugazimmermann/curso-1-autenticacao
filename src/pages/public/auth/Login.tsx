@@ -1,9 +1,10 @@
 import {useState} from "react";
-import {useParams, useNavigate} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {type LoginValues} from "../../../common/interfaces/auth";
 import {type AlertProps} from "../../../common/interfaces/components";
 import {PTBR, ROUTES} from "../../../common/constants";
 import {Auth} from "../../../services";
+import {useAuth} from "../../../context/AuthContext";
 import {isUser} from "../../../common/helpers";
 import {EmailIcon, PasswordIcon} from "../../../icons";
 import {AuthLink} from "../../../components";
@@ -12,7 +13,7 @@ import AuthLayout from "./AuthLayout";
 import AuthForm from "./AuthForm";
 
 const Login = (): JSX.Element => {
-  const navigate = useNavigate();
+  const {dispatch} = useAuth();
   const {email} = useParams();
   const [loading, setLoading] = useState<boolean>(false);
   const [alert, setAlert] = useState<AlertProps>();
@@ -36,8 +37,17 @@ const Login = (): JSX.Element => {
         text: response.data === "Unverified" ? PTBR.AUTH.USERUNVERIFIED : PTBR.AUTH.USERUNAUTHORIZED,
       });
     } else {
-      localStorage.setItem("token", String(response.data.token));
-      navigate(ROUTES.DASHBOARD);
+      dispatch({
+        type: "LOGIN",
+        payload: {
+          user: {
+            id: response.data.id,
+            name: response.data.name,
+            email: response.data.email,
+          },
+          token: String(response.data.token),
+        },
+      });
     }
     setLoading(false);
   };

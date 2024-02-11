@@ -1,36 +1,12 @@
-import {render, screen, waitFor} from "@testing-library/react";
+import {screen} from "@testing-library/react";
 import {PTBR} from "../../common/constants";
-import * as layout from "../layout/Layout";
+import {componentSetup, useAuthMock} from "../../tests-setup";
 import Dashboard from "./Dashboard";
 
-jest.mock("../layout/Layout", () => ({
-  ...jest.requireActual("../layout/Layout"),
-  useUser: jest.fn(),
-}));
-
 describe("Dashboard", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test("Dashboard should have title and not have user name", async () => {
-    require("../layout/Layout").useUser.mockResolvedValue();
-    render(<Dashboard />);
-    expect(
-      screen.getByRole("heading", {
-        name: PTBR.PAGES.DASHBOARD.TITLE,
-        level: 1,
-      }),
-    ).toBeInTheDocument();
-    expect(screen.queryByText(`${PTBR.PAGES.DASHBOARD.WELCOME} ${LOGGEDUSER.name}`)).not.toBeInTheDocument();
-  });
-
-  test("Dashboard should have user name", async () => {
-    require("../layout/Layout").useUser.mockReturnValue({userData: LOGGEDUSER});
-    render(<Dashboard />);
-    await waitFor(() => {
-      expect(layout.useUser).toHaveBeenCalledTimes(1);
-    });
+  test("Dashboard should have Dashboard text", async () => {
+    useAuthMock.mockReturnValue({state: {user: LOGGEDUSER}});
+    componentSetup({component: <Dashboard />});
     expect(
       screen.getByRole("heading", {
         name: PTBR.PAGES.DASHBOARD.TITLE,

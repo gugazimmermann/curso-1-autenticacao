@@ -18,9 +18,15 @@ jest.mock("../common/api/auth", () => ({
   newPassword: jest.fn(),
   login: jest.fn(),
   getUser: jest.fn(),
+  updatePassword: jest.fn(),
+  updateUser: jest.fn(),
 }));
 
 describe("Auth Services", () => {
+  afterEach(() => {
+    localStorage.removeItem("token");
+  });
+
   test("register should return user data", async () => {
     const data = {
       name: USER.name,
@@ -113,13 +119,39 @@ describe("Auth Services", () => {
     await waitFor(() => {
       expect(API.getUser).toHaveBeenCalledWith(LOGGEDTOKEN);
     });
-    localStorage.removeItem("token");
   });
 
   test("getCurrentUser should return null when user is not logged in", async () => {
     const result = await auth.getCurrentUser();
     await waitFor(() => {
       expect(result).toBeNull();
+    });
+  });
+
+  test("updatePassword should return user data", async () => {
+    require("../common/api/auth").updatePassword.mockResolvedValue(mockResponse);
+    localStorage.setItem("token", LOGGEDTOKEN);
+    const data = {
+      password: USER.password,
+      newpassword: USER.password,
+      repeatpassword: USER.password,
+    };
+    await auth.updatePassword(data);
+    await waitFor(() => {
+      expect(API.updatePassword).toHaveBeenCalledWith(data, LOGGEDTOKEN);
+    });
+  });
+
+  test("updateUser should return user data", async () => {
+    require("../common/api/auth").updateUser.mockResolvedValue(mockResponse);
+    localStorage.setItem("token", LOGGEDTOKEN);
+    const data = {
+      name: LOGGEDUSER.name,
+      email: LOGGEDUSER.email,
+    };
+    await auth.updateUser(data);
+    await waitFor(() => {
+      expect(API.updateUser).toHaveBeenCalledWith(data, LOGGEDTOKEN);
     });
   });
 });

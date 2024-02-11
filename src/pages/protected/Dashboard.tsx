@@ -1,14 +1,14 @@
 import {PTBR} from "../../common/constants";
+import {useAuth} from "../../context/AuthContext";
 import {Title} from "../../components/layout";
-import {useUser} from "../layout/Layout";
 
 const Dashboard = (): JSX.Element => {
-  const {userData} = useUser();
+  const {state} = useAuth();
 
   return (
     <section className="w-full">
       <Title title={PTBR.PAGES.DASHBOARD.TITLE} />
-      {userData && <h2>{`${PTBR.PAGES.DASHBOARD.WELCOME} ${userData.name}`}</h2>}
+      <h1>{`${PTBR.PAGES.DASHBOARD.WELCOME} ${state.user?.name}`}</h1>
     </section>
   );
 };

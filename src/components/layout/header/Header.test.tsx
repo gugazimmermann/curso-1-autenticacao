@@ -1,43 +1,31 @@
-import {render, screen, fireEvent} from "@testing-library/react";
-import {MemoryRouter} from "react-router-dom";
-import {type HeaderProps} from "../../../common/interfaces/components";
-import {PTBR, ROUTES} from "../../../common/constants";
-import {logoutMock} from "../../../tests-setup";
+import {screen, fireEvent} from "@testing-library/react";
+import {PTBR} from "../../../common/constants";
+import {componentSetup, logoutMock, useAuthMock} from "../../../tests-setup";
 import Header from "./Header";
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: jest.fn(),
-}));
-
 describe("Header", () => {
-  const setupComponent = (props: HeaderProps = {}): void => {
-    render(
-      <MemoryRouter>
-        <Header {...props} />
-      </MemoryRouter>,
-    );
-  };
-
-  it("Header should have logo, image and menu itens", async () => {
-    setupComponent();
+  test("Header should have logo, image and menu itens", async () => {
+    useAuthMock.mockReturnValue({state: {user: null}});
+    componentSetup({component: <Header />});
     expect(screen.getByText(String(process.env.REACT_APP_SITE_TITLE))).toBeInTheDocument();
     expect(screen.getByAltText("Logo")).toBeInTheDocument();
     expect(screen.getByRole("link", {name: PTBR.LAYOUT.MENU.HOME})).toBeInTheDocument();
     expect(screen.getByRole("link", {name: PTBR.LAYOUT.MENU.BLOG})).toBeInTheDocument();
     expect(screen.getByTestId("login-icon")).toBeInTheDocument();
+    expect(screen.queryByText(PTBR.PAGES.DASHBOARD.TITLE)).not.toBeInTheDocument();
     expect(screen.queryByTestId("logout-icon")).not.toBeInTheDocument();
   });
 
-  it("Header should have logout", async () => {
-    const mockNavigate = jest.fn();
-    require("react-router-dom").useNavigate.mockReturnValue(mockNavigate);
-    logoutMock.mockImplementationOnce(async (): Promise<void> => {
-      await Promise.resolve();
+  test("Header should have logout", async () => {
+    const mockDispatch = jest.fn();
+    useAuthMock.mockReturnValue({
+      state: {user: LOGGEDUSER},
+      dispatch: mockDispatch,
     });
-    setupComponent({user: LOGGEDUSER});
+    componentSetup({component: <Header />});
+    expect(screen.getByText(PTBR.PAGES.DASHBOARD.TITLE)).toBeInTheDocument();
     fireEvent.click(screen.getByTestId("logout-icon"));
     expect(logoutMock).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith(ROUTES.HOME);
+    expect(mockDispatch).toHaveBeenCalledWith({type: "LOGOUT"});
   });
 });

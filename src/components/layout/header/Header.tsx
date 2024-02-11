@@ -1,14 +1,13 @@
 import {useMemo} from "react";
-import {useNavigate} from "react-router-dom";
-import {type HeaderProps} from "../../../common/interfaces/components";
 import {PTBR, ROUTES} from "../../../common/constants";
+import {useAuth} from "../../../context/AuthContext";
 import {logout} from "../../../services/auth";
 import {LoginIcon, LogoutIcon} from "../../../icons";
 import Logo from "../logo/Logo";
 import NavLink from "./NavLink";
 
-const Header = ({user}: HeaderProps): JSX.Element => {
-  const navigate = useNavigate();
+const Header = (): JSX.Element => {
+  const {state, dispatch} = useAuth();
 
   const navItems = useMemo(
     () => [
@@ -26,11 +25,11 @@ const Header = ({user}: HeaderProps): JSX.Element => {
 
   const handleLogout = (): void => {
     logout();
-    navigate(ROUTES.HOME);
+    dispatch({type: "LOGOUT"});
   };
 
   const renderAuth = (): JSX.Element | undefined => {
-    if (!user) {
+    if (!state.user) {
       return <NavLink key={ROUTES.LOGIN} route={ROUTES.LOGIN} content={<LoginIcon />} />;
     }
     return (
