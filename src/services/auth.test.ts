@@ -36,6 +36,7 @@ jest.mock("../common/api/auth", () => ({
   forgotPassword: jest.fn(),
   newPassword: jest.fn(),
   login: jest.fn(),
+  getUser: jest.fn(),
 }));
 
 describe("Auth Services", () => {
@@ -143,5 +144,25 @@ describe("Auth Services", () => {
     auth.logout();
     const userToken = localStorage.getItem("token");
     expect(userToken).toBeNull();
+  });
+
+  test("getCurrentUser should return user data when user is logged in", async () => {
+    require("../common/api/auth").getUser.mockResolvedValue(mockResponse);
+    localStorage.setItem("token", token);
+    const res = await auth.getCurrentUser();
+    await waitFor(() => {
+      expect(API.getUser).toHaveBeenCalledWith(token);
+    });
+    await waitFor(() => {
+      expect(res).toEqual({data: userData});
+    });
+    localStorage.removeItem("token");
+  });
+
+  test("getCurrentUser should return null when user is not logged in", async () => {
+    const result = await auth.getCurrentUser();
+    await waitFor(() => {
+      expect(result).toBeNull();
+    });
   });
 });
