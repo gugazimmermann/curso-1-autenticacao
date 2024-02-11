@@ -1,8 +1,7 @@
-import {render, screen, fireEvent, waitFor} from "@testing-library/react";
+import {screen, fireEvent, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {MemoryRouter} from "react-router-dom";
 import {PTBR, ROUTES} from "../../../common/constants";
-import * as services from "../../../services/auth";
+import {componentSetup, loginMock} from "../../../tests-setup";
 import Login from "./Login";
 
 jest.mock("react-router-dom", () => ({
@@ -10,87 +9,53 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
 }));
 
-jest.mock("../../../services/auth", () => ({
-  ...jest.requireActual("../../../services/auth"),
-  login: jest.fn(),
-}));
+const fillForm = (data: {email: string; password: string}): void => {
+  userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), data.email);
+  userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.PASSWORD), String(data.password));
+  fireEvent.click(screen.getByTestId("auth-submit-button"));
+};
 
 describe("Login", () => {
-  const setupComponent = (): void => {
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>,
-    );
-  };
-
-  test("renders Login component with form", () => {
-    setupComponent();
-    expect(screen.getByPlaceholderText(PTBR.AUTH.EMAIL)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(PTBR.AUTH.PASSWORD)).toBeInTheDocument();
-    expect(screen.getByTestId("auth-submit-button")).toBeInTheDocument();
-  });
-
   test("handles form submission and redirects on successful login", async () => {
-    require("../../../services/auth").login.mockResolvedValue({
-      data: {
-        id: "8cd5be57-1b33-4662-b4c1-286b73f9f4ad",
-        name: "User Test",
-        email: "test@example.com",
-        verified: true,
-        token: "mocked-token",
-      },
-    });
+    loginMock.mockResolvedValue({data: LOGGEDUSER});
     const spy = jest.spyOn(Storage.prototype, "setItem");
     const mockNavigate = jest.fn();
     require("react-router-dom").useNavigate.mockReturnValue(mockNavigate);
-    setupComponent();
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), "test@example.com");
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.PASSWORD), "password");
-    fireEvent.click(screen.getByTestId("auth-submit-button"));
+    componentSetup({component: <Login />});
+    fillForm({email: USER.email, password: USER.password});
     await waitFor(() => {
-      expect(services.login).toHaveBeenCalledWith({
-        email: "test@example.com",
-        password: "password",
+      expect(loginMock).toHaveBeenCalledWith({
+        email: USER.email,
+        password: USER.password,
       });
-      expect(spy).toHaveBeenCalledWith("token", "mocked-token");
+      expect(spy).toHaveBeenCalledWith("token", LOGGEDTOKEN);
       expect(mockNavigate).toHaveBeenCalledWith(ROUTES.DASHBOARD);
     });
   });
 
   test("displays error message on login failure", async () => {
-    require("../../../services/auth").login.mockResolvedValue({
-      data: "Unauthorized",
-    });
-    setupComponent();
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), "test@example.com");
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.PASSWORD), "wrongpassword");
-    fireEvent.click(screen.getByTestId("auth-submit-button"));
+    loginMock.mockResolvedValue({data: "Unauthorized"});
+    componentSetup({component: <Login />});
+    fillForm({email: USER.email, password: USER.password});
     await waitFor(() => {
       expect(screen.getByText(PTBR.AUTH.USERUNAUTHORIZED)).toBeInTheDocument();
     });
   });
 
   test("displays error message when user is unverified", async () => {
-    require("../../../services/auth").login.mockResolvedValue({
-      data: "Unverified",
-    });
-    setupComponent();
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), "test@example.com");
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.PASSWORD), "password");
-    fireEvent.click(screen.getByTestId("auth-submit-button"));
+    loginMock.mockResolvedValue({data: "Unverified"});
+    componentSetup({component: <Login />});
+    fillForm({email: USER.email, password: USER.password});
     await waitFor(() => {
       expect(screen.getByText(PTBR.AUTH.EMAILUNVERIFIED)).toBeInTheDocument();
     });
   });
 
   test("displays error message when email is invalid", async () => {
-    setupComponent();
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), "test@example");
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), "password");
-    fireEvent.click(screen.getByTestId("auth-submit-button"));
+    componentSetup({component: <Login />});
+    fillForm({email: "test@test", password: USER.password});
     await waitFor(() => {
-      expect(services.login).not.toHaveBeenCalled();
+      expect(loginMock).not.toHaveBeenCalled();
       expect(screen.getByText(PTBR.AUTH.EMAILERROR)).toBeInTheDocument();
     });
   });

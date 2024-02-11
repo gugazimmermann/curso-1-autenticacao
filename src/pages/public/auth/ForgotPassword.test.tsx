@@ -1,8 +1,7 @@
-import {render, screen, fireEvent, waitFor} from "@testing-library/react";
+import {screen, fireEvent, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {MemoryRouter} from "react-router-dom";
 import {PTBR, ROUTES} from "../../../common/constants";
-import * as services from "../../../services/auth";
+import {componentSetup, forgotPasswordMock} from "../../../tests-setup";
 import ForgotPassword from "./ForgotPassword";
 
 jest.mock("react-router-dom", () => ({
@@ -10,68 +9,40 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
 }));
 
-jest.mock("../../../services/auth", () => ({
-  ...jest.requireActual("../../../services/auth"),
-  forgotPassword: jest.fn(),
-}));
+const fillForm = (data: {email: string}): void => {
+  userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), data.email);
+  fireEvent.click(screen.getByTestId("auth-submit-button"));
+};
 
 describe("ForgotPassword", () => {
-  const setupComponent = (): void => {
-    render(
-      <MemoryRouter>
-        <ForgotPassword />
-      </MemoryRouter>,
-    );
-  };
-
-  it("renders ForgotPassword component with form", () => {
-    setupComponent();
-    expect(screen.getByPlaceholderText(PTBR.AUTH.EMAIL)).toBeInTheDocument();
-    expect(screen.getByTestId("auth-submit-button")).toBeInTheDocument();
-  });
-
-  it("handles form submission and redirects on successful email", async () => {
-    const userData = {
-      id: "8cd5be57-1b33-4662-b4c1-286b73f9f4ad",
-      name: "User Test",
-      email: "test@example.com",
-      verified: true,
-      code: "mocked-code",
-    };
-    require("../../../services/auth").forgotPassword.mockResolvedValue({
-      data: userData,
-    });
+  test("handles form submission and redirects on successful email", async () => {
+    forgotPasswordMock.mockResolvedValue({data: LOGGEDUSER});
     const mockNavigate = jest.fn();
     require("react-router-dom").useNavigate.mockReturnValue(mockNavigate);
-    setupComponent();
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), userData.email);
-    fireEvent.click(screen.getByTestId("auth-submit-button"));
+    componentSetup({component: <ForgotPassword />});
+    fillForm({email: USER.email});
     await waitFor(() => {
-      expect(services.forgotPassword).toHaveBeenCalledWith({
-        email: userData.email,
+      expect(forgotPasswordMock).toHaveBeenCalledWith({
+        email: USER.email,
       });
-      expect(mockNavigate).toHaveBeenCalledWith(`${ROUTES.NEW_PASSWORD}/${userData.email}`);
+      expect(mockNavigate).toHaveBeenCalledWith(`${ROUTES.NEW_PASSWORD}/${LOGGEDUSER.email}`);
     });
   });
 
-  it("displays error message when email not fount", async () => {
-    require("../../../services/auth").forgotPassword.mockResolvedValue({
-      data: null,
-    });
-    setupComponent();
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), "test@example.com");
-    fireEvent.click(screen.getByTestId("auth-submit-button"));
+  test("displays error message when email not found", async () => {
+    forgotPasswordMock.mockResolvedValue({data: undefined});
+    componentSetup({component: <ForgotPassword />});
+    fillForm({email: USER.email});
     await waitFor(() => {
       expect(screen.getByText(PTBR.AUTH.EMAILNOTFOUND)).toBeInTheDocument();
     });
   });
 
-  it("displays error message when email is invalid", async () => {
-    setupComponent();
-    userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), "test@example");
-    fireEvent.click(screen.getByTestId("auth-submit-button"));
+  test("displays error message when email is invalid", async () => {
+    componentSetup({component: <ForgotPassword />});
+    fillForm({email: "test@test"});
     await waitFor(() => {
-      expect(services.forgotPassword).not.toHaveBeenCalled();
+      expect(forgotPasswordMock).not.toHaveBeenCalled();
       expect(screen.getByText(PTBR.AUTH.EMAILERROR)).toBeInTheDocument();
     });
   });
