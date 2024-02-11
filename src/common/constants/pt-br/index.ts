@@ -28,6 +28,11 @@ const LOGIN = {
   TITLE: "Entrar no Sistema",
 };
 
+const DASHBOARD = {
+  TITLE: "Dashboard",
+  WELCOME: "Bem Vindo,",
+};
+
 const PTBR = Object.freeze({
   LAYOUT: {
     MENU,
@@ -40,6 +45,7 @@ const PTBR = Object.freeze({
   PAGES: {
     BLOG,
     LOGIN,
+    DASHBOARD,
   },
 });
 
