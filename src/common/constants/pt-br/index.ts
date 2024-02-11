@@ -27,8 +27,54 @@ const BLOG = {
   ERROR: "Ocorreu um erro, tente novamente.",
 };
 
+const AUTH = {
+  USERUNVERIFIED: "Email não verificado.",
+  USERUNAUTHORIZED: "Não autorizado, tente novamente.",
+  EMAIL: "Email",
+  EMAILERROR: "Email inválido.",
+  EMAILNOTFOUND: "Email não encontrado.",
+  EMAILUNVERIFIED: "Email não verificado.",
+  PASSWORD: "Senha",
+  PASSWORDERROR: "Senha inválida, senhas são diferente ou não tem o mínimo de 6 caracteres",
+  REPEATPASSWORD: "Repita a Senha",
+  CODE: "Código",
+  CODEERROR: "Código inválido.",
+  CODESENDED: "Código enviado para",
+  SENDCODEERROR: "Erro ao enviar o código, tente novamente.",
+  NAME: "Nome",
+  NAMEERROR: "Nome inválido, mínimo 3 caracteres.",
+  REGISTERERROR: "Ocorreu um erro ao cadastrar, tente novamente.",
+  LINKFORGOTPASSWORD: "Esqueceu a senha? Clique aqui!",
+  LINKREGISTER: "Não tem conta? Faça seu cadastro!",
+  LINKALREDYREGISTERED: "Já tem cadastro? Faça seu login!",
+  LINKVERIFYEMAIL: "Clique aqui para verificar o email!",
+  LINKBACKTOLOGIN: "Voltar para o Login.",
+};
+
 const LOGIN = {
   TITLE: "Entrar no Sistema",
+  BUTTON: "Entrar",
+};
+
+const REGISTER = {
+  TITLE: "Novo Cadastro",
+  BUTTON: "Cadastrar",
+};
+
+const VERIFYEMAIL = {
+  TITLE: "Verificar Email",
+  BUTTON: "Enviar Código",
+  BUTTONRESEND: "Re-Enviar Código",
+};
+
+const FORGOTPASSWORD = {
+  TITLE: "Recuperar Senha",
+  BUTTON: "Receber Código",
+};
+
+const NEWPASSWORD = {
+  TITLE: "Nova Senha",
+  BUTTON: "Enviar",
 };
 
 const DASHBOARD = {
@@ -48,8 +94,13 @@ const PTBR = Object.freeze({
   PAGES: {
     BLOG,
     LOGIN,
+    REGISTER,
+    VERIFYEMAIL,
+    FORGOTPASSWORD,
+    NEWPASSWORD,
     DASHBOARD,
   },
+  AUTH,
 });
 
 export default PTBR;
