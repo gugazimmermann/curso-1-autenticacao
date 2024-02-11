@@ -20,8 +20,11 @@ const LOGINBUTTON = {
 };
 
 const BLOG = {
-  TITLE: "Todos os Posts",
+  TITLE: "Filmes em Cartaz",
+  RELEASE: "Lançamento",
   BUTTON: "Voltar",
+  NORESULT: "Nenhum resultado encontrado.",
+  ERROR: "Ocorreu um erro, tente novamente.",
 };
 
 const LOGIN = {

@@ -1,10 +1,9 @@
 export interface IBlogPost {
   id: string;
-  category: string;
+  genres: IBlogApiGenre[];
   title: string;
   image: string;
   description: string;
-  content?: string;
   date: string;
 }
 
@@ -12,20 +11,17 @@ export interface BlogPostProps {
   post: IBlogPost;
 }
 
+export interface IBlogApiGenre {
+  id: number;
+  name: string;
+}
+
 export interface IBlogApiPost {
   id: number;
-  category: string;
+  genre_ids?: number[];
+  genres?: IBlogApiGenre[];
   title: string;
-  photo_url: string;
-  description: string;
-  content_html: string;
-  created_at: string;
-}
-
-export interface IBlogApiResponse {
-  blogs: IBlogApiPost[];
-}
-
-export interface IBlogApiPostResponse {
-  blog: IBlogApiPost;
+  overview: string;
+  release_date: string;
+  poster_path: string;
 }
