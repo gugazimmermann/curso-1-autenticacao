@@ -8,5 +8,7 @@ export {
   loginMock,
   logoutMock,
   getCurrentUserMock,
+  updatePassword,
+  updateUser,
 } from "./authServiceMock";
 export {useAuthMock} from "./authContextMock";

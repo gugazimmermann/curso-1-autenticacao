@@ -3,6 +3,7 @@ import {Route, createBrowserRouter, createRoutesFromElements, Navigate, Outlet} 
 import {useAuth} from "../context/AuthContext";
 import {ROUTES} from "../common/constants";
 import Layout from "../pages/layout/Layout";
+import ProtectedLayout from "../pages/protected/ProtectedLayout";
 import {Loading} from "../components";
 
 const ProtectedRoute = (): JSX.Element => {
@@ -44,6 +45,7 @@ const VerifyEmail = lazyLoad(import("../pages/public/auth/VerifyEmail"), "Verify
 const ForgotPassword = lazyLoad(import("../pages/public/auth/ForgotPassword"), "ForgotPassword");
 const NewPassword = lazyLoad(import("../pages/public/auth/NewPassword"), "NewPassword");
 const Dashboard = lazyLoad(import("../pages/protected/Dashboard"), "Dashboard");
+const Account = lazyLoad(import("../pages/protected/account/Account"), "Account");
 
 const Routes = createBrowserRouter(
   createRoutesFromElements(
@@ -60,7 +62,10 @@ const Routes = createBrowserRouter(
           <Route path={`${ROUTES.NEW_PASSWORD}/:email?`} element={<NewPassword />} />
         </Route>
         <Route element={<ProtectedRoute />}>
-          <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+          <Route element={<ProtectedLayout />}>
+            <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+            <Route path={ROUTES.ACCOUNT} element={<Account />} />
+          </Route>
         </Route>
       </Route>
       <Route path="*" element={<NoMatch />} />

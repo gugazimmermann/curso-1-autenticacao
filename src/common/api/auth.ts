@@ -6,6 +6,8 @@ import {
   type ForgotPasswordValues,
   type NewPasswordValues,
   type LoginValues,
+  type AccountPasswordValues,
+  type AccountUpdateValues,
 } from "../interfaces/auth";
 import {type IUser, type IUserData, type IUserResponse} from "../interfaces/user";
 import {API, JWT, delay, generateCode, generateUUID} from "./helpers";
@@ -126,4 +128,38 @@ export const getUser = async (token: string): Promise<IUserResponse> => {
   if (!user) return API.notFound;
   const {password, ...userData} = user;
   return API.handleResponse<IUserData, IUserResponse>(200, userData);
+};
+
+export const updatePassword = async (data: AccountPasswordValues, token: string): Promise<IUserResponse> => {
+  await delay(500);
+  const users = API.getMock<IUser>("users");
+  const {id} = JWT.verifyJWT(token);
+  const user = users.find(u => u.id === id);
+  if (!user) return API.notFound;
+  if (
+    data.password.length < 6 ||
+    data.newpassword.length < 6 ||
+    data.newpassword !== data.repeatpassword ||
+    user.password !== data.password
+  ) {
+    return API.forbidden;
+  }
+  const {password, ...userData} = user;
+  saveOrUpdateUserMock("u", {...user, password: data.newpassword});
+  return API.handleResponse<IUserData, IUserResponse>(200, userData);
+};
+
+export const updateUser = async (data: AccountUpdateValues, token: string): Promise<IUserResponse> => {
+  await delay(500);
+  const users = API.getMock<IUser>("users");
+  const {id} = JWT.verifyJWT(token);
+  const user = users.find(u => u.id === id);
+  if (!user) return API.notFound;
+  const code = user.email !== data.email ? createUserCode(id) : undefined;
+  user.verified = user.email === data.email;
+  user.name = data.name;
+  user.email = data.email;
+  saveOrUpdateUserMock("u", user);
+  const {password, ...userData} = user;
+  return API.handleResponse<IUserData, IUserResponse>(200, {...userData, code});
 };

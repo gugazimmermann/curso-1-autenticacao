@@ -11,6 +11,8 @@ jest.mock("../services/auth", () => ({
   login: jest.fn(),
   logout: jest.fn(),
   getCurrentUser: jest.fn(),
+  updatePassword: jest.fn(),
+  updateUser: jest.fn(),
 }));
 
 export const registerMock = auth.register as jest.Mock<Promise<IUserResult>>;
@@ -21,3 +23,5 @@ export const newPasswordMock = auth.newPassword as jest.Mock<Promise<IUserResult
 export const loginMock = auth.login as jest.Mock<Promise<IUserResult>>;
 export const logoutMock = auth.logout as jest.Mock<void>;
 export const getCurrentUserMock = auth.getCurrentUser as jest.Mock<Promise<IUserResult>>;
+export const updatePassword = auth.updatePassword as jest.Mock<Promise<IUserResult>>;
+export const updateUser = auth.updateUser as jest.Mock<Promise<IUserResult>>;

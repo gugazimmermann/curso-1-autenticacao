@@ -28,3 +28,11 @@ export interface ICode {
   code: VerifyEmailValues["code"];
   date: number;
 }
+
+export interface AccountPasswordValues extends Omit<RegisterValues, "email" | "name"> {
+  newpassword: string;
+}
+
+export interface AccountUpdateValues extends AuthBaseValues {
+  name: string;
+}

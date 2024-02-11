@@ -5,6 +5,8 @@ import {
   type ReSendCodeValues,
   type RegisterValues,
   type VerifyEmailValues,
+  type AccountPasswordValues,
+  type AccountUpdateValues,
 } from "../common/interfaces/auth";
 import {type IUserResult} from "../common/interfaces/user";
 import * as API from "../common/api";
@@ -50,4 +52,14 @@ export const logout = (): void => {
 export const getCurrentUser = async (): Promise<IUserResult | null> => {
   const token = localStorage.getItem("token");
   return token ? await handleApiRequest(async () => await API.Auth.getUser(token)) : null;
+};
+
+export const updatePassword = async (data: AccountPasswordValues): Promise<IUserResult> => {
+  const token = localStorage.getItem("token");
+  return await handleApiRequest(async () => await API.Auth.updatePassword(data, String(token)));
+};
+
+export const updateUser = async (data: AccountUpdateValues): Promise<IUserResult> => {
+  const token = localStorage.getItem("token");
+  return await handleApiRequest(async () => await API.Auth.updateUser(data, String(token)));
 };
