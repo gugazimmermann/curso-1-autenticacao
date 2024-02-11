@@ -20,6 +20,7 @@
   },
   "plugins": ["react", "prettier"],
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/strict-boolean-expressions": [2, {"allowNullableBoolean": true}]
   }
 }
