@@ -24,12 +24,7 @@ describe("Footer", () => {
   test("Footer should have image and not have LoginButton", async () => {
     setupComponent({
       image: true,
-      user: {
-        id: "49c88ac9-77cd-49d7-9311-25987fce2086",
-        name: "Test User",
-        email: "test@teste.com",
-        verified: true,
-      },
+      user: LOGGEDUSER,
     });
     expect(screen.queryByText(PTBR.COMPONENTS.LOGINBUTTON.TEXT)).not.toBeInTheDocument();
     expect(screen.getByAltText("Logo")).toBeInTheDocument();

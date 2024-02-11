@@ -8,13 +8,6 @@ jest.mock("../layout/Layout", () => ({
   useUser: jest.fn(),
 }));
 
-const userData = {
-  id: "0cee0dcc-3160-4e0f-a01a-6f2742ed9289",
-  name: "Test User",
-  email: "test@test.com",
-  verified: true,
-};
-
 describe("Dashboard", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -29,11 +22,11 @@ describe("Dashboard", () => {
         level: 1,
       }),
     ).toBeInTheDocument();
-    expect(screen.queryByText(`${PTBR.PAGES.DASHBOARD.WELCOME} ${userData.name}`)).not.toBeInTheDocument();
+    expect(screen.queryByText(`${PTBR.PAGES.DASHBOARD.WELCOME} ${LOGGEDUSER.name}`)).not.toBeInTheDocument();
   });
 
   test("Dashboard should have user name", async () => {
-    require("../layout/Layout").useUser.mockReturnValue({userData});
+    require("../layout/Layout").useUser.mockReturnValue({userData: LOGGEDUSER});
     render(<Dashboard />);
     await waitFor(() => {
       expect(layout.useUser).toHaveBeenCalledTimes(1);
@@ -44,6 +37,6 @@ describe("Dashboard", () => {
         level: 1,
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(`${PTBR.PAGES.DASHBOARD.WELCOME} ${userData.name}`)).toBeInTheDocument();
+    expect(screen.getByText(`${PTBR.PAGES.DASHBOARD.WELCOME} ${LOGGEDUSER.name}`)).toBeInTheDocument();
   });
 });

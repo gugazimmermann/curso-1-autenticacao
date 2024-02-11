@@ -1,21 +1,12 @@
 import {render, screen, waitFor} from "@testing-library/react";
 import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {PTBR, ROUTES} from "../../common/constants";
-import * as services from "../../services/auth";
+import {getCurrentUserMock} from "../../tests-setup";
 import Home from "../public/home/Home";
 import Dashboard from "../protected/Dashboard";
 import Layout from "./Layout";
 
-jest.mock("../../services/auth", () => ({
-  ...jest.requireActual("../../services/auth"),
-  getCurrentUser: jest.fn(),
-}));
-
 describe("Layout", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   const setupComponent = (): void => {
     render(
       <MemoryRouter initialEntries={[ROUTES.HOME]}>
@@ -30,18 +21,10 @@ describe("Layout", () => {
   };
 
   test("should navigate to dashboard if currentUser is available", async () => {
-    const data = {
-      id: "0cee0dcc-3160-4e0f-a01a-6f2742ed9289",
-      name: "Test User",
-      email: "test@test.com",
-      verified: true,
-    };
-    require("../../services/auth").getCurrentUser.mockResolvedValue({
-      data,
-    });
+    getCurrentUserMock.mockResolvedValue({data: LOGGEDUSER});
     setupComponent();
     await waitFor(() => {
-      expect(services.getCurrentUser).toHaveBeenCalledTimes(1);
+      expect(getCurrentUserMock).toHaveBeenCalledTimes(1);
     });
     await waitFor(() => {
       expect(
@@ -50,15 +33,15 @@ describe("Layout", () => {
           level: 1,
         }),
       ).toBeInTheDocument();
-      expect(screen.getByText(`${PTBR.PAGES.DASHBOARD.WELCOME} ${data.name}`)).toBeInTheDocument();
+      expect(screen.getByText(`${PTBR.PAGES.DASHBOARD.WELCOME} ${LOGGEDUSER.name}`)).toBeInTheDocument();
     });
   });
 
   test("should navigate to home if currentUser is not available", async () => {
-    require("../../services/auth").getCurrentUser.mockResolvedValue(null);
+    getCurrentUserMock.mockResolvedValue({data: undefined});
     setupComponent();
     await waitFor(() => {
-      expect(services.getCurrentUser).toHaveBeenCalledTimes(1);
+      expect(getCurrentUserMock).toHaveBeenCalledTimes(1);
     });
     await waitFor(() => {
       expect(screen.getByText(PTBR.COMPONENTS.HERO.TITLE)).toBeInTheDocument();
