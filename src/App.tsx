@@ -1,6 +1,7 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {ROUTES} from "./common/constants";
 import Layout from "./pages/layout/Layout";
+import NoMatch from "./pages/layout/NoMatch";
 import Home from "./pages/public/home/Home";
 import Blog from "./pages/public/blog/Blog";
 import Post from "./pages/public/blog/Post";
@@ -16,6 +17,7 @@ function App(): JSX.Element {
           <Route path={`${ROUTES.BLOG}/:postId?`} element={<Post />} />
           <Route path={ROUTES.LOGIN} element={<Login />} />
         </Route>
+        <Route path="*" element={<NoMatch />} />
       </Routes>
     </BrowserRouter>
   );
