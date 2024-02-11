@@ -46,3 +46,8 @@ export const login = async (data: LoginValues): Promise<IUserResult> => {
 export const logout = (): void => {
   localStorage.removeItem("token");
 };
+
+export const getCurrentUser = async (): Promise<IUserResult | null> => {
+  const token = localStorage.getItem("token");
+  return token ? await handleApiRequest(async () => await API.Auth.getUser(token)) : null;
+};

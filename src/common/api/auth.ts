@@ -117,3 +117,13 @@ export const login = async (data: LoginValues): Promise<IUserResponse> => {
     token: JWT.generateJWT(user.id),
   });
 };
+
+export const getUser = async (token: string): Promise<IUserResponse> => {
+  await delay(500);
+  const users = API.getMock<IUser>("users");
+  const {id} = JWT.verifyJWT(token);
+  const user = users.find(u => u.id === id);
+  if (!user) return API.notFound;
+  const {password, ...userData} = user;
+  return API.handleResponse<IUserData, IUserResponse>(200, userData);
+};
