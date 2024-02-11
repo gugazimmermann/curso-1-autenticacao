@@ -1,6 +1,7 @@
 const ROUTES = Object.freeze({
   HOME: "/",
   BLOG: "/blog",
+  BLOG_GENRE: "/genero",
   LOGIN: "/entrar",
   LOGOUT: "/sair",
   REGISTER: "/cadastro",
