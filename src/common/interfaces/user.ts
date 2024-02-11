@@ -10,4 +10,14 @@ export interface IUser {
 
 export interface IUserData extends Omit<IUser, "password"> {
   code?: ICode["code"];
+  token?: string;
+}
+
+export interface IUserResponse {
+  status: number;
+  data?: string | IUserData;
+}
+
+export interface IUserResult extends Omit<IUserResponse, "status"> {
+  error?: string;
 }
