@@ -5,3 +5,6 @@ export {default as AlertErrorIcon} from "./AlertErrorIcon";
 export {default as AlertInfoIcon} from "./AlertInfoIcon";
 export {default as AlertSuccessIcon} from "./AlertSuccessIcon";
 export {default as AlertWarningIcon} from "./AlertWarningIcon";
+export {default as EmailIcon} from "./EmailIcon";
+export {default as PasswordIcon} from "./PasswordIcon";
+export {default as UserIcon} from "./UserIcon";

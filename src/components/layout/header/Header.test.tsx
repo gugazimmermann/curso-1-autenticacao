@@ -2,7 +2,7 @@ import {render, screen, fireEvent} from "@testing-library/react";
 import {MemoryRouter} from "react-router-dom";
 import {type HeaderProps} from "../../../common/interfaces/components";
 import {PTBR, ROUTES} from "../../../common/constants";
-import * as Auth from "../../../services/auth";
+import {logoutMock} from "../../../tests-setup";
 import Header from "./Header";
 
 jest.mock("react-router-dom", () => ({
@@ -10,16 +10,7 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
 }));
 
-jest.mock("../../../services/auth", () => ({
-  ...jest.requireActual("../../../services/auth"),
-  logout: jest.fn(),
-}));
-
 describe("Header", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   const setupComponent = (props: HeaderProps = {}): void => {
     render(
       <MemoryRouter>
@@ -28,7 +19,7 @@ describe("Header", () => {
     );
   };
 
-  test("Header should have logo, image and menu itens", async () => {
+  it("Header should have logo, image and menu itens", async () => {
     setupComponent();
     expect(screen.getByText(String(process.env.REACT_APP_SITE_TITLE))).toBeInTheDocument();
     expect(screen.getByAltText("Logo")).toBeInTheDocument();
@@ -38,19 +29,15 @@ describe("Header", () => {
     expect(screen.queryByTestId("logout-icon")).not.toBeInTheDocument();
   });
 
-  test("Header should have logout", async () => {
+  it("Header should have logout", async () => {
     const mockNavigate = jest.fn();
     require("react-router-dom").useNavigate.mockReturnValue(mockNavigate);
-    setupComponent({
-      user: {
-        id: "49c88ac9-77cd-49d7-9311-25987fce2086",
-        name: "Test User",
-        email: "test@teste.com",
-        verified: true,
-      },
+    logoutMock.mockImplementationOnce(async (): Promise<void> => {
+      await Promise.resolve();
     });
+    setupComponent({user: LOGGEDUSER});
     fireEvent.click(screen.getByTestId("logout-icon"));
-    expect(Auth.logout).toHaveBeenCalled();
+    expect(logoutMock).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith(ROUTES.HOME);
   });
 });

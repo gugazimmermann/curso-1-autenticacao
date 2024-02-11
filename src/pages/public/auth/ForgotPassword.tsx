@@ -1,24 +1,22 @@
 import {useState} from "react";
-import {useParams, useNavigate} from "react-router-dom";
-import {type LoginValues} from "../../../common/interfaces/auth";
+import {useNavigate} from "react-router-dom";
+import {type ForgotPasswordValues} from "../../../common/interfaces/auth";
 import {type AlertProps} from "../../../common/interfaces/components";
 import {PTBR, ROUTES} from "../../../common/constants";
 import {Auth} from "../../../services";
 import {isUser} from "../../../common/helpers";
-import {EmailIcon, PasswordIcon} from "../../../icons";
+import {EmailIcon} from "../../../icons";
 import {AuthLink} from "../../../components";
 import {validateEmail} from "../../utils/validation";
 import AuthLayout from "./AuthLayout";
 import AuthForm from "./AuthForm";
 
-const Login = (): JSX.Element => {
+const ForgotPassword = (): JSX.Element => {
   const navigate = useNavigate();
-  const {email} = useParams();
   const [loading, setLoading] = useState<boolean>(false);
   const [alert, setAlert] = useState<AlertProps>();
-  const [values, setValues] = useState<LoginValues>({
-    email: email ?? "",
-    password: "",
+  const [values, setValues] = useState<ForgotPasswordValues>({
+    email: "",
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -29,25 +27,25 @@ const Login = (): JSX.Element => {
       setLoading(false);
       return;
     }
-    const response = await Auth.login(values);
+    const response = await Auth.forgotPassword(values);
     if (!isUser(response?.data)) {
       setAlert({
         type: "error",
-        text: response.data === "Unverified" ? PTBR.AUTH.USERUNVERIFIED : PTBR.AUTH.USERUNAUTHORIZED,
+        text: PTBR.AUTH.EMAILNOTFOUND,
       });
     } else {
-      localStorage.setItem("token", String(response.data.token));
-      navigate(ROUTES.DASHBOARD);
+      console.log({code: response.data.code});
+      navigate(`${ROUTES.NEW_PASSWORD}/${values.email}`);
     }
     setLoading(false);
   };
 
   return (
-    <AuthLayout title={PTBR.PAGES.LOGIN.TITLE}>
-      <AuthForm<LoginValues>
+    <AuthLayout title={PTBR.PAGES.FORGOTPASSWORD.TITLE}>
+      <AuthForm<ForgotPasswordValues>
         loading={loading}
         alert={alert}
-        submitText={PTBR.PAGES.LOGIN.BUTTON}
+        submitText={PTBR.PAGES.FORGOTPASSWORD.BUTTON}
         onSubmit={async e => {
           await handleSubmit(e);
         }}
@@ -62,22 +60,11 @@ const Login = (): JSX.Element => {
             icon: <EmailIcon />,
             value: "email",
           },
-          {
-            required: true,
-            type: "password",
-            placeholder: PTBR.AUTH.PASSWORD,
-            icon: <PasswordIcon />,
-            value: "password",
-          },
         ]}>
-        <>
-          <AuthLink route={ROUTES.FORGOT_PASSWORD} text={PTBR.AUTH.LINKFORGOTPASSWORD} />
-          <AuthLink route={ROUTES.REGISTER} text={PTBR.AUTH.LINKREGISTER} />
-          <AuthLink route={ROUTES.VERIFY_EMAIL} text={PTBR.AUTH.LINKVERIFYEMAIL} />
-        </>
+        <AuthLink route={ROUTES.LOGIN} text={PTBR.AUTH.LINKBACKTOLOGIN} />
       </AuthForm>
     </AuthLayout>
   );
 };
 
-export default Login;
+export default ForgotPassword;

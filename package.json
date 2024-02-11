@@ -24,8 +24,9 @@
       "!src/common/api/**/*.{ts,tsx}",
       "!src/common/constants/*.{ts,tsx}",
       "!src/common/interfaces/*.{ts,tsx}",
-      "!src/routes/Routes.tsx"
-    ],
+      "!src/routes/Routes.tsx",
+      "!src/tests-setup/*.{ts,tsx}"
+    ],  
     "coverageThreshold": {
       "global": {
         "branches": 90,
@@ -34,7 +35,7 @@
         "statements": 90
       }
     }
-  },
+  },  
   "eslintConfig": {
     "extends": [
       "react-app",
