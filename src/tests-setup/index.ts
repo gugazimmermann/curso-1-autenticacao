@@ -9,3 +9,4 @@ export {
   logoutMock,
   getCurrentUserMock,
 } from "./authServiceMock";
+export {useAuthMock} from "./authContextMock";

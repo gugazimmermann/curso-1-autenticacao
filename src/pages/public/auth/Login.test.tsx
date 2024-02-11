@@ -1,13 +1,8 @@
 import {screen, fireEvent, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {PTBR, ROUTES} from "../../../common/constants";
-import {componentSetup, loginMock} from "../../../tests-setup";
+import {PTBR} from "../../../common/constants";
+import {componentSetup, loginMock, useAuthMock} from "../../../tests-setup";
 import Login from "./Login";
-
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: jest.fn(),
-}));
 
 const fillForm = (data: {email: string; password: string}): void => {
   userEvent.type(screen.getByPlaceholderText(PTBR.AUTH.EMAIL), data.email);
@@ -16,11 +11,11 @@ const fillForm = (data: {email: string; password: string}): void => {
 };
 
 describe("Login", () => {
-  test("handles form submission and redirects on successful login", async () => {
+  test("handles form submission on successful login", async () => {
+    const mockDispatch = jest.fn();
+    useAuthMock.mockReturnValue({dispatch: mockDispatch});
     loginMock.mockResolvedValue({data: LOGGEDUSER});
     const spy = jest.spyOn(Storage.prototype, "setItem");
-    const mockNavigate = jest.fn();
-    require("react-router-dom").useNavigate.mockReturnValue(mockNavigate);
     componentSetup({component: <Login />});
     fillForm({email: USER.email, password: USER.password});
     await waitFor(() => {
@@ -28,12 +23,23 @@ describe("Login", () => {
         email: USER.email,
         password: USER.password,
       });
-      expect(spy).toHaveBeenCalledWith("token", LOGGEDTOKEN);
-      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.DASHBOARD);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "LOGIN",
+        payload: {
+          user: {
+            id: LOGGEDUSER.id,
+            name: LOGGEDUSER.name,
+            email: LOGGEDUSER.email,
+          },
+          token: LOGGEDTOKEN,
+        },
+      });
+      expect(spy).toHaveBeenCalledTimes(2);
     });
   });
 
   test("displays error message on login failure", async () => {
+    useAuthMock.mockReturnValue({dispatch: null});
     loginMock.mockResolvedValue({data: "Unauthorized"});
     componentSetup({component: <Login />});
     fillForm({email: USER.email, password: USER.password});
@@ -43,6 +49,7 @@ describe("Login", () => {
   });
 
   test("displays error message when user is unverified", async () => {
+    useAuthMock.mockReturnValue({dispatch: null});
     loginMock.mockResolvedValue({data: "Unverified"});
     componentSetup({component: <Login />});
     fillForm({email: USER.email, password: USER.password});
@@ -52,6 +59,7 @@ describe("Login", () => {
   });
 
   test("displays error message when email is invalid", async () => {
+    useAuthMock.mockReturnValue({dispatch: null});
     componentSetup({component: <Login />});
     fillForm({email: "test@test", password: USER.password});
     await waitFor(() => {

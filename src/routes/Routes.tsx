@@ -1,8 +1,21 @@
 import {lazy, Suspense} from "react";
-import {Route, createBrowserRouter, createRoutesFromElements} from "react-router-dom";
+import {Route, createBrowserRouter, createRoutesFromElements, Navigate, Outlet} from "react-router-dom";
+import {useAuth} from "../context/AuthContext";
 import {ROUTES} from "../common/constants";
 import Layout from "../pages/layout/Layout";
 import {Loading} from "../components";
+
+const ProtectedRoute = (): JSX.Element => {
+  const {state} = useAuth();
+  if (!state.token) return <Navigate to={ROUTES.LOGIN} replace />;
+  return <Outlet />;
+};
+
+const PublicRoute = (): JSX.Element => {
+  const {state} = useAuth();
+  if (state.token) return <Navigate to={ROUTES.DASHBOARD} replace />;
+  return <Outlet />;
+};
 
 const lazyLoad = (
   component: Promise<any>,
@@ -39,12 +52,16 @@ const Routes = createBrowserRouter(
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={`${ROUTES.BLOG}/:postId?`} element={<Blog />} />
         <Route path={`${ROUTES.BLOG}${ROUTES.BLOG_GENRE}/:genreId?`} element={<Blog />} />
-        <Route path={`${ROUTES.LOGIN}/:email?`} element={<Login />} />
-        <Route path={ROUTES.REGISTER} element={<Register />} />
-        <Route path={`${ROUTES.VERIFY_EMAIL}/:email?`} element={<VerifyEmail />} />
-        <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
-        <Route path={`${ROUTES.NEW_PASSWORD}/:email?`} element={<NewPassword />} />
-        <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+        <Route element={<PublicRoute />}>
+          <Route path={`${ROUTES.LOGIN}/:email?`} element={<Login />} />
+          <Route path={ROUTES.REGISTER} element={<Register />} />
+          <Route path={`${ROUTES.VERIFY_EMAIL}/:email?`} element={<VerifyEmail />} />
+          <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
+          <Route path={`${ROUTES.NEW_PASSWORD}/:email?`} element={<NewPassword />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+        </Route>
       </Route>
       <Route path="*" element={<NoMatch />} />
     </>,
